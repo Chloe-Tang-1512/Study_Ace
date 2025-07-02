@@ -77,28 +77,6 @@ README.md
 
 ---
 
-## Example Screenshots
-
-### Web Version
-
-- **Dashboard:**  
-  ![Dashboard Screenshot](docs/screenshots/dashboard.png)
-
-- **Leaderboard:**  
-  ![Leaderboard Screenshot](docs/screenshots/leaderboard.png)
-
-### Terminal Version
-
-- **Main Menu:**  
-  ![Terminal Main Menu](docs/screenshots/terminal_main_menu.png)
-
-- **Game Example:**  
-  ![Terminal Game](docs/screenshots/terminal_game.png)
-
-*(Screenshots are optional. Add your own in a `docs/screenshots/` folder if desired.)*
-
----
-
 ## Contributing
 
 Contributions are welcome!  
