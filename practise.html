@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Practise: {{ flashcard_set.title }}</h2>
+<p>Card {{ idx }} of {{ total }}</p>
+<p>Score: {{ score }}</p>
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label"><strong>Term:</strong> {{ term }}</label>
+        <input type="text" class="form-control" name="user_answer" placeholder="Type the definition" required autofocus>
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+</form>
+<a href="{{ url_for('dashboard') }}" class="btn btn-theme mb-3">Back to Dashboard</a>

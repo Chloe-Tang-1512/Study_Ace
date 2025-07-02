@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Multiple Choice ({{ idx }}/{{ total }})</h2>
+<p><strong>Term:</strong> {{ term }}</p>
+<form method="post">
+    {% for option in options %}
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="choice" id="option{{ loop.index }}" value="{{ option }}" required>
+            <label class="form-check-label" for="option{{ loop.index }}">{{ option }}</label>
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+</form>
+<p>Score: {{ score }}/{{ total }}</p>
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}

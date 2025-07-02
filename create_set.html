@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Create Flashcard Set</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul>
+    {% for message in messages %}
+      <li style="color: red;">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form method="post">
+    <div class="mb-3">
+        <label for="title" class="form-label">Set Title</label>
+        <input type="text" class="form-control" name="title" value="{{ prev_title if prev_title is defined else '' }}" required>
+    </div>
+    <div id="flashcards">
+        {% set terms = prev_terms if prev_terms is defined else ['',''] %}
+        {% set definitions = prev_definitions if prev_definitions is defined else ['',''] %}
+        {% for i in range(terms|length) %}
+        <div class="row mb-2 flashcard">
+            <div class="col">
+                <input type="text" class="form-control" name="term" placeholder="Term" value="{{ terms[i] }}">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="definition" placeholder="Definition" value="{{ definitions[i] }}">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-danger" onclick="removeCard(this)">Remove</button>
+            </div>
+        </div>
+        {% endfor %}
+        {% if terms|length < 2 %}
+        {% for i in range(2 - terms|length) %}
+        <div class="row mb-2 flashcard">
+            <div class="col">
+                <input type="text" class="form-control" name="term" placeholder="Term">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="definition" placeholder="Definition">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-danger" onclick="removeCard(this)">Remove</button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <button type="button" class="btn btn-secondary mb-2" onclick="addCard()">Add Another Card</button>
+    <br>
+    <button type="submit" class="btn btn-success">Create Set</button>
+</form>
+
+<script>
+function addCard() {
+    var container = document.getElementById('flashcards');
+    var div = document.createElement('div');
+    div.className = 'row mb-2 flashcard';
+    div.innerHTML = `
+        <div class="col">
+            <input type="text" class="form-control" name="term" placeholder="Term">
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" name="definition" placeholder="Definition">
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-danger" onclick="removeCard(this)">Remove</button>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+function removeCard(btn) {
+    var div = btn.parentNode.parentNode;
+    div.parentNode.removeChild(div);
+}
+</script>
+{% endblock %}
