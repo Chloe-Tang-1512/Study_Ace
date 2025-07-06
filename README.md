@@ -17,6 +17,7 @@ Study Ace is a comprehensive flashcard-based learning platform with both a web (
 - **Gamification:** Earn badges and level up based on your points.
 - **Tagging & Filtering:** Add tags to flashcards and review by tag.
 - **PWA Support:** Installable as a Progressive Web App for offline use.
+- **Cloud-ready:** Can be deployed to platforms like Render or Railway with a managed database.
 
 ### Terminal Version (`flashcards.py`)
 - **User Authentication:** Secure login and account creation with password hashing.
@@ -36,7 +37,7 @@ Study Ace is a comprehensive flashcard-based learning platform with both a web (
 
 1. **Install dependencies:**
     ```bash
-    pip install flask flask_sqlalchemy werkzeug
+    pip install -r requirements.txt
     ```
 
 2. **Run the app:**
@@ -85,6 +86,7 @@ requirements.txt
 - For local use, follow the steps above.
 - For online deployment, use a platform like [Render](https://render.com) or [Railway](https://railway.app) and a managed database (PostgreSQL/MySQL).
 - Update `SQLALCHEMY_DATABASE_URI` in `app.py` for cloud database usage.
+- See [Render Flask deployment guide](https://render.com/docs/deploy-flask) for step-by-step instructions.
 
 ---
 
