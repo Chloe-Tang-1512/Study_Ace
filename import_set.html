@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Import Flashcard Set</h2>
+<form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="title" class="form-label">Set Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="file" class="form-label">Choose file (JSON or CSV)</label>
+        <input type="file" class="form-control" id="file" name="file" required>
+    </div>
+    <div class="mb-3">
+        <label for="format" class="form-label">Format</label>
+        <select class="form-select" id="format" name="format" required>
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Import</button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

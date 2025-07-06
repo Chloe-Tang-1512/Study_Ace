@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Gamification bar -->
+<div class="mb-3" style="display:flex;gap:24px;align-items:center;">
+  <span><strong>Streak:</strong> {{ streak }}🔥</span>
+  <span><strong>Points:</strong> {{ points }}</span>
+  <span>
+    <strong>Latest Achievement:</strong>
+    {% if achievements %}
+      <span class="badge bg-warning text-dark" style="margin-right:4px;">
+        {{ achievements[-1] | replace('Created your first set', '🌟 Created your first set!') 
+                           | replace('Created 5 sets', '📚 Created 5 sets!') 
+                           | replace('Added 20 cards', '📝 Added 20 cards!') 
+                           | replace('Scored 100 points', '💯 Scored 100 points!') 
+                           | replace('Scored 500 points', '🏆 Scored 500 points!') 
+                           | replace('7-day streak', '🔥 7-day streak!') 
+                           | replace('30-day streak', '🌟 30-day streak!') 
+                           | replace("Completed today's daily challenge", '🎯 Completed today\'s daily challenge!') }}
+      </span>
+      <button class="btn btn-theme btn-sm p-0" type="button" data-bs-toggle="modal" data-bs-target="#allAchievementsModal" style="vertical-align:middle;">
+        Show all
+      </button>
+    {% else %}
+      None
+    {% endif %}
+  </span>
+  <span><strong>Your Level:</strong> {{ user_rank }}</span>
+  <span><a href="{{ url_for('leaderboard') }}" class="btn btn-outline-theme btn-sm">View Leaderboard</a></span>
+</div>
+
+<!-- Achievements Modal -->
+<div class="modal fade" id="allAchievementsModal" tabindex="-1" aria-labelledby="allAchievementsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="allAchievementsModalLabel">All Achievements</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if achievements %}
+          <ul>
+            {% for achievement in achievements %}
+              <li>
+                {{ achievement | replace('Created your first set', '🌟 Created your first set!') 
+                              | replace('Created 5 sets', '📚 Created 5 sets!') 
+                              | replace('Added 20 cards', '📝 Added 20 cards!') 
+                              | replace('Scored 100 points', '💯 Scored 100 points!') 
+                              | replace('Scored 500 points', '🏆 Scored 500 points!') 
+                              | replace('7-day streak', '🔥 7-day streak!') 
+                              | replace('30-day streak', '🌟 30-day streak!') 
+                              | replace("Completed today's daily challenge", '🎯 Completed today\'s daily challenge!') }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No achievements yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Daily Challenge Bar -->
+<div class="alert alert-info mb-3" style="max-width:600px;">
+  <strong>Daily Challenge:</strong>
+  Answer {{ daily_challenge.goal }} questions correctly today.<br>
+  Progress: {{ daily_challenge.progress }}/{{ daily_challenge.goal }}
+  {% if daily_challenge.completed %}
+    <span class="badge bg-success ms-2">Completed!</span>
+  {% endif %}
+</div>
+
+<!-- Top bar with Create New Set and Manage Account aligned horizontally -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+  <div>
+    <a href="{{ url_for('create_set') }}" class="btn btn-theme mb-3">Create New Set</a>
+    <a href="{{ url_for('import_set') }}" class="btn btn-outline-theme mb-3">Import Set</a>
+  </div>
+  <a href="{{ manage_account_url }}" class="btn btn-theme mb-3" style="background-color:var(--theme-main); border-color:var(--theme-main);">
+    Manage Account
+  </a>
+</div>
+
+<!-- Search Sets Form -->
+<form method="post" action="{{ url_for('dashboard') }}" class="mb-3" style="max-width:400px;">
+    <input type="text" name="search_query" class="form-control" placeholder="Search flashcard sets..." value="{{ search_query|default('') }}">
+    <button type="submit" class="btn btn-outline-theme mt-2">Search Sets</button>
+</form>
+
+<h2>Your Flashcard Sets - Study Ace</h2>
+<ul class="list-group">
+    {% for s in flashcard_sets %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ s.title }}
+            <div class="d-flex align-items-center">
+                <a href="{{ url_for('review_set', set_id=s.id) }}" class="btn btn-outline-primary btn-sm">Review</a>
+                <a href="{{ url_for('flashcard_practise', set_id=s.id) }}" class="btn btn-outline-success btn-sm">Practise</a>
+                <a href="{{ url_for('edit_set', set_id=s.id) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                <!-- Extras dropdown -->
+                <div class="dropdown d-inline-block">
+                  <button class="btn btn-outline-theme btn-sm dropdown-toggle" type="button" id="dropdownMenuButton{{ s.id }}" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.25rem 0.6rem;">
+                    &#8230;
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ s.id }}">
+                    <li>
+                      <a class="dropdown-item" href="{{ url_for('search_within_set', set_id=s.id) }}">Search Within Set</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{{ url_for('export_set', set_id=s.id, format='json') }}">Export as JSON</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{{ url_for('export_set', set_id=s.id, format='csv') }}">Export as CSV</a>
+                    </li>
+                  </ul>
+                </div>
+                <form method="POST" action="{{ url_for('delete_set', set_id=s.id) }}" style="display:inline;" onsubmit="return confirm('Delete this flashcard set?');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+            </div>
+        </li>
+    {% else %}
+        <li class="list-group-item">No flashcard sets yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

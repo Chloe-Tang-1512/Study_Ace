@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit Flashcard Set</h2>
+<form method="post" id="edit-set-form">
+    <div class="mb-3">
+        <label for="title" class="form-label">Set Title</label>
+        <input type="text" class="form-control" name="title" value="{{ flashcard_set.title }}" required>
+        <input type="hidden" name="editing_existing_set" value="1">
+    </div>
+    <div id="flashcards">
+        {% for card in flashcard_set.cards %}
+        <div class="row mb-2 align-items-center flashcard-row">
+            <div class="col">
+                <input type="text" class="form-control" name="term" placeholder="Term" value="{{ card.term }}" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="definition" placeholder="Definition" value="{{ card.definition }}" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="tags" placeholder="Tags (comma separated)" value="{{ card.tags }}">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-danger btn-sm" onclick="deleteCard('{{ card.id }}', this)">Delete</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="button" class="btn btn-secondary mb-2" onclick="addFlashcard()">Add Another Card</button>
+    <br>
+    <button type="submit" class="btn btn-success" id="save-btn">Save Changes</button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+    <input type="hidden" name="delete_card_id" id="delete_card_id_hidden_main" value="">
+</form>
+<form id="delete-card-form" method="post" style="display:none;">
+    <input type="hidden" name="delete_card_id" id="delete_card_id_hidden">
+</form>
+<script>
+function addFlashcard() {
+    var container = document.getElementById('flashcards');
+    var row = document.createElement('div');
+    row.className = 'row mb-2 align-items-center flashcard-row';
+    row.innerHTML = `
+        <div class="col">
+            <input type="text" class="form-control" name="term" placeholder="Term" required>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" name="definition" placeholder="Definition" required>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" name="tags" placeholder="Tags (comma separated)">
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-danger btn-sm" onclick="deleteUnsavedCard(this)">Delete</button>
+        </div>
+    `;
+    container.appendChild(row);
+}
+
+function deleteCard(cardId, btn) {
+    if (cardId === '' || cardId === undefined || cardId === 'None') {
+        deleteUnsavedCard(btn);
+        return;
+    }
+    if (confirm('Delete this card?')) {
+        var form = document.getElementById('delete-card-form');
+        document.getElementById('delete_card_id_hidden').value = cardId;
+        form.action = window.location.href;
+        form.submit();
+    }
+}
+
+function deleteUnsavedCard(btn) {
+    var row = btn.closest('.flashcard-row');
+    if (row) row.remove();
+}
+
+document.getElementById('edit-set-form').addEventListener('submit', function() {
+    document.getElementById('delete_card_id_hidden_main').value = "";
+});
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Fill in the Blank ({{ idx }}/{{ total }})</h2>
+<p><strong>Term:</strong> {{ term }}</p>
+<p><strong>Definition:</strong> {{ blanked_definition }}</p>
+<form method="post">
+    <input type="text" name="user_answer" class="form-control mb-2" placeholder="Type the missing word" required>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<p>Score: {{ score }}/{{ total }}</p>
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}

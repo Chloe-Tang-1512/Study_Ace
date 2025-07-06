@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Practise Complete!</h2>
+<p>Your score: {{ score }} / {{ total }}</p>
+<a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+<a href="{{ url_for('flashcard_practise', set_id=flashcard_set.id) }}" class="btn btn-success">Practise Again</a>
+{% endblock %}

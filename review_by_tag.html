@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Review by Tag - {{ flashcard_set.title }}</h2>
+<form method="get">
+    <label for="tag">Filter by tag:</label>
+    <select name="tag" id="tag" onchange="this.form.submit()">
+        <option value="">-- All --</option>
+        {% for tag in all_tags %}
+            <option value="{{ tag }}" {% if tag == selected_tag %}selected{% endif %}>{{ tag }}</option>
+        {% endfor %}
+    </select>
+</form>
+<ul class="list-group mt-3">
+    {% for card in cards %}
+        <li class="list-group-item">
+            <strong>{{ card.term }}</strong>: {{ card.definition }}
+            {% if card.tags %}
+                <span class="badge bg-secondary">{{ card.tags }}</span>
+            {% endif %}
+        </li>
+    {% endfor %}
+    {% if not cards %}
+        <li class="list-group-item">No cards found for this tag.</li>
+    {% endif %}
+</ul>
+<a href="{{ url_for('review_set', set_id=flashcard_set.id) }}" class="btn btn-secondary mt-3">Back to Set</a>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+    <title>Leaderboard - Study Ace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+      .leaderboard-table tr.user-row-highlight {
+        background-color: var(--theme-main) !important;
+        color: #fff !important;
+        font-weight: bold;
+      }
+      .leaderboard-table th, .leaderboard-table td {
+        border: 2px solid var(--theme-border) !important;
+        background-clip: padding-box;
+      }
+      .leaderboard-table th {
+        background-color: var(--theme-main) !important;
+        color: #fff !important;
+        font-weight: bold;
+      }
+      .leaderboard-table td {
+        color: #222 !important;
+      }
+      
+    </style>
+    {% block content %}
+    <div class="container">
+        <h1 class="mt-5">Leaderboard</h1>
+        <p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-theme mb-3">Back to Dashboard</a>
+        </p>
+        <table class="table table-bordered align-middle leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Level</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% set theme = session['theme'] if session['theme'] is defined else 'blue' %}
+            {% for user in top_users %}
+              {% if theme == 'red' %}
+                {% set even_bg = '#ffe5e5' %}
+                {% set odd_bg = '#fff' %}
+                {% set user_bg = '#dc3545' %}
+                {% set user_color = '#fff' %}
+              {% elif theme == 'green' %}
+                {% set even_bg = '#e6ffe6' %}
+                {% set odd_bg = '#fff' %}
+                {% set user_bg = '#198754' %}
+                {% set user_color = '#fff' %}
+              {% else %}
+                {% set even_bg = '#e6f0ff' %}
+                {% set odd_bg = '#fff' %}
+                {% set user_bg = '#0d6efd' %}
+                {% set user_color = '#fff' %}
+              {% endif %}
+              {% set is_me = session['user_id'] is defined and user.get('id', None) == session['user_id'] %}
+              <tr
+                {% if is_me %}
+                  class="user-row-highlight"
+                  style="background-color: {{ user_bg }} !important; color: {{ user_color }} !important; font-weight: bold;"
+                {% else %}
+                  style="background-color: {{ even_bg if loop.index0 % 2 == 0 else odd_bg }};"
+                {% endif %}
+              >
+                <td>{{ loop.index }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.level }}</td>
+                <td>{{ user.points }}</td>
+              </tr>
+            {% endfor %}
+            {% if my_rank and my_rank > 10 and my_user %}
+              {% if theme == 'red' %}
+                {% set user_bg = '#dc3545' %}
+                {% set user_color = '#fff' %}
+              {% elif theme == 'green' %}
+                {% set user_bg = '#198754' %}
+                {% set user_color = '#fff' %}
+              {% else %}
+                {% set user_bg = '#0d6efd' %}
+                {% set user_color = '#fff' %}
+              {% endif %}
+              <tr style="background-color: {{ user_bg }} !important; color: {{ user_color }} !important; font-weight: bold;">
+                <td>{{ my_rank }}</td>
+                <td>{{ my_user.username }}</td>
+                <td>{{ my_user.level }}</td>
+                <td>{{ my_user.points }}</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+    </div>
+    {% endblock %}
+</body>
+</html>

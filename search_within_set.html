@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Search Within Set: {{ flashcard_set.title }}</h2>
+<form method="post" class="mb-3">
+    <input type="text" name="query" class="form-control" placeholder="Enter term or definition..." value="{{ query }}">
+    <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
+{% if results %}
+    <ul class="list-group">
+    {% for card in results %}
+        <li class="list-group-item">
+            <strong>{{ card.term }}</strong>: {{ card.definition }}
+        </li>
+    {% endfor %}
+    </ul>
+{% elif query %}
+    <p>No matching cards found.</p>
+{% endif %}
+<a href="{{ url_for('dashboard') }}" class="btn btn-theme mb-3">Back to Dashboard</a>
+{% endblock %}

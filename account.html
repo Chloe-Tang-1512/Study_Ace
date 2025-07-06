@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 40px auto 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 32px;">
+    <h1 class="mb-4" style="text-align: center; color: #333;">Account Management</h1>
+    <div class="messages">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="alert alert-info" style="list-style:none; padding-left:0;">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+    </div>
+
+    <h2 style="color: #4CAF50; margin-top: 24px; margin-bottom: 12px; font-size: 1.2em;">Account Details</h2>
+    <ul class="list-group mb-3">
+        <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+        <li class="list-group-item"><strong>Streak:</strong> {{ user.streak }}</li>
+        <li class="list-group-item"><strong>Points:</strong> {{ user.points }}</li>
+        <li class="list-group-item"><strong>Achievements:</strong>
+            {% if user.achievements %}
+                {% for achievement in user.achievements.split(',') if achievement %}
+                    <span class="badge bg-warning text-dark" style="margin-right:4px;">{{ achievement }}</span>
+                {% endfor %}
+            {% else %}
+                None
+            {% endif %}
+        </li>
+    </ul>
+
+    <h2 style="color: #4CAF50; margin-top: 24px; margin-bottom: 12px; font-size: 1.2em;">Edit Username</h2>
+    <form method="post" class="mb-3 p-3 bg-light rounded shadow-sm">
+        <input type="hidden" name="action" value="edit_username">
+        <div class="mb-2">
+            <label class="form-label">New Username:</label>
+            <input type="text" name="new_username" value="{{ user.username }}" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Username</button>
+    </form>
+
+    <h2 style="color: #4CAF50; margin-top: 24px; margin-bottom: 12px; font-size: 1.2em;">Change Password</h2>
+    <form method="post" class="mb-3 p-3 bg-light rounded shadow-sm">
+        <input type="hidden" name="action" value="change_password">
+        <div class="mb-2">
+            <label class="form-label">Current Password:</label>
+            <input type="password" name="current_password" class="form-control">
+        </div>
+        <div class="mb-2">
+            <label class="form-label">New Password:</label>
+            <input type="password" name="new_password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Change Password</button>
+    </form>
+
+    <h2 style="color: #4CAF50; margin-top: 24px; margin-bottom: 12px; font-size: 1.2em;">Delete Account</h2>
+    <form method="post" class="mb-3 p-3 bg-light rounded shadow-sm" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+        <input type="hidden" name="action" value="delete_account">
+        <div class="mb-2">
+            <label class="form-label">Enter Password to Confirm:</label>
+            <input type="password" name="delete_password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-danger">Delete Account</button>
+    </form>
+
+    <h2 style="color: #4CAF50; margin-top: 24px; margin-bottom: 12px; font-size: 1.2em;">Change Theme Colour</h2>
+    <form method="post">
+        <input type="hidden" name="action" value="change_theme">
+        <div class="mb-3">
+            <label for="theme" class="form-label">Theme</label>
+            <select class="form-select" id="theme" name="theme">
+                <option value="blue" {% if user_theme == 'blue' %}selected{% endif %}>Blue</option>
+                <option value="red" {% if user_theme == 'red' %}selected{% endif %}>Red</option>
+                <option value="green" {% if user_theme == 'green' %}selected{% endif %}>Green</option>
+                <option value="dark" {% if user_theme == 'dark' %}selected{% endif %}>Dark</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Save Theme</button>
+    </form>
+
+    <div style="text-align:center;">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-theme mb-3">Back to Dashboard</a>
+    </div>
+</div>
+<style>
+    .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        font-size: 0.9em;
+        border-radius: 12px;
+    }
+</style>
+{% endblock %}

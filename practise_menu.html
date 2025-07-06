@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Practise: {{ flashcard_set.title }}</h2>
+<p>Select a practise mode:</p>
+<div class="btn-group-vertical" style="width: 100%; max-width: 320px;">
+  <a href="{{ url_for('flashcard_practise', set_id=set_id, mode='classic') }}" class="btn btn-outline-success mb-2">Classic (Type the answer)</a>
+  <a href="{{ url_for('flashcard_practise', set_id=set_id, mode='multiple_choice') }}" class="btn btn-outline-warning mb-2">Multiple Choice</a>
+  <a href="{{ url_for('flashcard_practise', set_id=set_id, mode='fill_blank') }}" class="btn btn-outline-info mb-2">Fill in the Blank</a>
+</div>
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}

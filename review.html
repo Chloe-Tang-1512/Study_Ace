@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Review: {{ flashcard_set.title }}</h2>
+<a href="{{ url_for('dashboard') }}" class="btn btn-theme mb-3">Back to Dashboard</a>
+{% if flashcard_set.cards %}
+    <div id="flashcard-review" class="mb-3 d-flex justify-content-center">
+        <div class="flip-card" id="flip-card">
+            <div class="flip-card-inner" id="flip-card-inner">
+                <div class="flip-card-front d-flex align-items-center justify-content-center">
+                    <div class="flashcard-content term-center" id="term"></div>
+                </div>
+                <div class="flip-card-back d-flex align-items-center justify-content-center">
+                    <div class="flashcard-content" id="definition"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-secondary" id="prev-card">Previous</button>
+        <button class="btn btn-info" id="flip-btn">Flip</button>
+        <button class="btn btn-secondary" id="next-card">Next</button>
+    </div>
+    <style>
+        .flip-card {
+            background-color: transparent;
+            width: 400px;
+            height: 200px;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* Changed transition to linear and shorter duration for instant flip */
+            transition: transform 0.25s linear;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: #f8f9fa;
+            border: 2px solid #0d6efd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            padding: 20px;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background: #e3f0fc;
+        }
+    </style>
+    <script>
+        const cards = [
+            {% for card in flashcard_set.cards %}
+                { term: {{ card.term|tojson }}, definition: {{ card.definition|tojson }} },
+            {% endfor %}
+        ];
+        let idx = 0;
+        function autoShrinkFont(el, maxFont = 24, minFont = 12) {
+            el.style.fontSize = ""; // Reset
+            let fontSize = maxFont;
+            el.style.fontSize = fontSize + "px";
+            // Shrink until fits both vertically and horizontally
+            while ((el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth) && fontSize > minFont) {
+                fontSize -= 1;
+                el.style.fontSize = fontSize + "px";
+            }
+        }
+        function showCard(i) {
+            const termEl = document.getElementById('term');
+            const defEl = document.getElementById('definition');
+            termEl.innerText = cards[i].term;
+            defEl.innerText = cards[i].definition;
+            document.getElementById('flip-card').classList.remove('flipped');
+            // Wait for DOM update, then shrink font if needed
+            setTimeout(() => {
+                autoShrinkFont(termEl);
+                autoShrinkFont(defEl);
+            }, 0);
+        }
+        document.getElementById('flip-btn').onclick = function() {
+            document.getElementById('flip-card').classList.toggle('flipped');
+        };
+        document.getElementById('next-card').onclick = function() {
+            idx++;
+            if (idx >= cards.length) idx = 0;
+            showCard(idx);
+        };
+        document.getElementById('prev-card').onclick = function() {
+            idx--;
+            if (idx < 0) idx = cards.length - 1;
+            showCard(idx);
+        };
+        showCard(idx);
+    </script>
+{% else %}
+    <p>No cards in this set.</p>
+{% endif %}
+{% endblock %}
