@@ -10,10 +10,11 @@ from flask import send_file
 import io
 import csv
 import json
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flashcards.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///flashcards.db')
 app.config['APPLICATION_NAME'] = 'Study Ace'
 db = SQLAlchemy(app)
 
